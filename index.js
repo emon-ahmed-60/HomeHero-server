@@ -23,6 +23,20 @@ async function run() {
   try {
     // Connect the client to the server	(optional starting in v4.7)
     await client.connect();
+    const HouseholdDB = client.db("Household");
+    const serviceCollection = HouseholdDB.collection("services")
+
+    app.get("/latest-services",async(req,res) => {
+      const cursor = serviceCollection.find().sort({created_at : -1}).limit(6);
+      const result = await cursor.toArray();
+      res.send(result)
+    })
+
+    app.get("/services",async(req,res)=>{
+      const cursor = serviceCollection.find();
+      const result = await cursor.toArray()
+      res.send(result)
+    })
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
@@ -35,9 +49,12 @@ run().catch(console.dir);
 
 
 app.get("/",(req,res)=>{
-    console.log("yes");
+    res.send("server is running")
 })
 
 app.listen(port,()=>{
     console.log(`server running on port ${port}`);
 })
+
+
+
