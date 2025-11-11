@@ -24,6 +24,7 @@ async function run() {
     await client.connect();
     const HouseholdDB = client.db("Household");
     const serviceCollection = HouseholdDB.collection("services")
+    const bookingsCollection = HouseholdDB.collection("bookings")
 
     app.get("/latest-services",async(req,res) => {
       const cursor = serviceCollection.find().sort({created_at : -1}).limit(6);
@@ -55,6 +56,12 @@ async function run() {
     app.post("/add-service",async(req,res)=>{
       const newService = req.body;
       const result =await serviceCollection.insertOne(newService);
+      res.send(result)
+    })
+
+    app.post("/add-booking",async(req,res)=>{
+      const newBooking = req.body;
+      const result = await bookingsCollection.insertOne(newBooking);
       res.send(result)
     })
 
