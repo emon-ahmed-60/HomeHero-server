@@ -28,114 +28,181 @@ async function run() {
     const reviewsCollection = HouseholdDB.collection("reviews");
 
     app.get("/top-rated-reviews", async (req, res) => {
-      const services = await serviceCollection.find({}).toArray();
+      try {
+        const services = await serviceCollection.find({}).toArray();
 
-      const reviews = await reviewsCollection
-        .find()
-        .sort({ rating: -1 })
-        .limit(6)
-        .toArray();
+        const reviews = await reviewsCollection
+          .find()
+          .sort({ rating: -1 })
+          .limit(6)
+          .toArray();
 
-      const modifyReviews = reviews.map((review) => {
-        const matchedService = services.find(
-          (s) => s._id.toString() === review.reviewId?.toString()
-        );
+        const modifyReviews = reviews.map((review) => {
+          const matchedService = services.find(
+            (s) => s._id.toString() === review.reviewId?.toString()
+          );
 
-        return matchedService ? { ...review, service: matchedService } : review;
-      });
+          return matchedService
+            ? { ...review, service: matchedService }
+            : review;
+        });
 
-      res.send(modifyReviews);
+        res.send(modifyReviews);
+      } catch (error) {
+        console.log(error);
+        res.status(500).json({ error: "Internal Server Error" });
+      }
     });
 
     app.get("/services", async (req, res) => {
-      const cursor = serviceCollection.find();
-      const result = await cursor.toArray();
-      res.send(result);
+      try {
+        const cursor = serviceCollection.find();
+        const result = await cursor.toArray();
+        res.send(result);
+      } catch (error) {
+        console.log(error);
+        res.status(500).json({ error: "Internal Server Error" });
+      }
     });
 
     app.get("/my-services", async (req, res) => {
-      const email = req.query.email;
-      const query = { email: email };
-      const cursor = serviceCollection.find(query).sort({ price: 1 });
-      const result = await cursor.toArray();
-      res.send(result);
+      try {
+        const email = req.query.email;
+        const query = { email: email };
+        const cursor = serviceCollection.find(query).sort({ price: 1 });
+        const result = await cursor.toArray();
+        res.send(result);
+      } catch (error) {
+        console.log(error);
+        res.status(500).json({ error: "Internal Server Error" });
+      }
     });
 
     app.get("/filter-services", async (req, res) => {
-      const minPrice = Number(req.query.minPrice);
-      const maxPrice = Number(req.query.maxPrice);
-      const query = {
-        price: { $gte: minPrice, $lte: maxPrice },
-      };
-      const cursor = serviceCollection.find(query).sort({ price: 1 });
-      const result = await cursor.toArray();
-      res.send(result);
+      try {
+        const minPrice = Number(req.query.minPrice);
+        const maxPrice = Number(req.query.maxPrice);
+        const query = {
+          price: { $gte: minPrice, $lte: maxPrice },
+        };
+        const cursor = serviceCollection.find(query).sort({ price: 1 });
+        const result = await cursor.toArray();
+        res.send(result);
+      } catch (error) {
+        console.log(error);
+        res.status(500).json({ error: "Internal Server Error" });
+      }
     });
 
     app.get("/my-services/:id", async (req, res) => {
-      const id = req.params.id;
-      const query = { _id: new ObjectId(id) };
-      const result = await serviceCollection.findOne(query);
-      res.send(result);
+      try {
+        const id = req.params.id;
+        const query = { _id: new ObjectId(id) };
+        const result = await serviceCollection.findOne(query);
+        res.send(result);
+      } catch (error) {
+        console.log(error);
+        res.status(500).json({ error: "Internal Server Error" });
+      }
     });
 
     app.get("/my-bookings", async (req, res) => {
-      const email = req.query.email;
-      const query = { userEmail: email };
-      const cursor = bookingsCollection.find(query).sort({ price: 1 });
-      const result = await cursor.toArray();
-      res.send(result);
+      try {
+        const email = req.query.email;
+        const query = { userEmail: email };
+        const cursor = bookingsCollection.find(query).sort({ price: 1 });
+        const result = await cursor.toArray();
+        res.send(result);
+      } catch (error) {
+        console.log(error);
+        res.status(500).json({ error: "Internal Server Error" });
+      }
     });
 
     app.get("/service-review", async (req, res) => {
-      const id = req.query.serviceId;
-      const query = { reviewId: id };
-      const cursor = reviewsCollection.find(query).sort({ rating: 1 });
-      const result = await cursor.toArray();
-      res.send(result);
+      try {
+        const id = req.query.serviceId;
+        const query = { reviewId: id };
+        const cursor = reviewsCollection.find(query).sort({ rating: 1 });
+        const result = await cursor.toArray();
+        res.send(result);
+      } catch (error) {
+        console.log(error);
+        res.status(500).json({ error: "Internal Server Error" });
+      }
     });
 
     app.post("/add-service", async (req, res) => {
-      const newService = req.body;
-      const result = await serviceCollection.insertOne(newService);
-      res.send(result);
+      try {
+        const newService = req.body;
+        const result = await serviceCollection.insertOne(newService);
+        res.send(result);
+      } catch (error) {
+        console.log(error);
+        res.status(500).json({ error: "Internal Server Error" });
+      }
     });
 
     app.post("/add-booking", async (req, res) => {
-      const newBooking = req.body;
-      const result = await bookingsCollection.insertOne(newBooking);
-      res.send(result);
+      try {
+        const newBooking = req.body;
+        const result = await bookingsCollection.insertOne(newBooking);
+        res.send(result);
+      } catch (error) {
+        console.log(error);
+        res.status(500).json({ error: "Internal Server Error" });
+      }
     });
 
     app.post("/add-review", async (req, res) => {
-      const newReview = req.body;
-      const result = await reviewsCollection.insertOne(newReview);
-      res.send(result);
+      try {
+        const newReview = req.body;
+        const result = await reviewsCollection.insertOne(newReview);
+        res.send(result);
+      } catch (error) {
+        console.log(error);
+        res.status(500).json({ error: "Internal Server Error" });
+      }
     });
 
     app.put("/update-service/:id", async (req, res) => {
-      const id = req.params.id;
-      const updateObj = req.body;
-      const query = { _id: new ObjectId(id) };
-      const updateDocument = {
-        $set: updateObj,
-      };
-      const result = await serviceCollection.updateOne(query, updateDocument);
-      res.send(result);
+      try {
+        const id = req.params.id;
+        const updateObj = req.body;
+        const query = { _id: new ObjectId(id) };
+        const updateDocument = {
+          $set: updateObj,
+        };
+        const result = await serviceCollection.updateOne(query, updateDocument);
+        res.send(result);
+      } catch (error) {
+        console.log(error);
+        res.status(500).json({ error: "Internal Server Error" });
+      }
     });
 
     app.delete("/delete-service/:id", async (req, res) => {
-      const id = req.params.id;
-      const query = { _id: new ObjectId(id) };
-      const result = await serviceCollection.deleteOne(query);
-      res.send(result);
+      try {
+        const id = req.params.id;
+        const query = { _id: new ObjectId(id) };
+        const result = await serviceCollection.deleteOne(query);
+        res.send(result);
+      } catch (error) {
+        console.log(error);
+        res.status(500).json({ error: "Internal Server Error" });
+      }
     });
 
     app.delete("/my-booking/:id", async (req, res) => {
-      const id = req.params.id;
-      const query = { _id: new ObjectId(id) };
-      const result = await bookingsCollection.deleteOne(query);
-      res.send(result);
+      try {
+        const id = req.params.id;
+        const query = { _id: new ObjectId(id) };
+        const result = await bookingsCollection.deleteOne(query);
+        res.send(result);
+      } catch (error) {
+        console.log(error);
+        res.status(500).json({ error: "Internal Server Error" });
+      }
     });
 
     // Send a ping to confirm a successful connection
